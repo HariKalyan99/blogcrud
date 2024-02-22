@@ -5,10 +5,14 @@ import './index.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Featurepost from './components/Featurepost'
+import Createpost from './components/Createpost'
+import Displayposts from './components/Displayposts'
 
 const router = createBrowserRouter([
   {path: "/", element: <App />, children: [
-    {path: "/featurepost", element: <Featurepost />}
+    {path: "/", element: <Createpost />},
+    {path: "/displaypost", element: <Displayposts />},
+    {path: "/featurepost", element: <Featurepost />},
   ]},
   
 ])

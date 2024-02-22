@@ -1,13 +1,14 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useState } from "react";
 import Searchpost from "./Searchpost";
 import { Link } from "react-router-dom";
-import Featurepost from "./Featurepost";
+import { crudStore } from "../store/Store";
 
-const Header = ({ setDisplayHeader, displayHeader, onSearchPosts}) => {
+const Header = () => {
 
 
   const [getInput, setInput] = useState("")
 
+  const {onSearchPosts, displayingHeader, displayHeader} = useContext(crudStore)
 
 
   return (
@@ -35,7 +36,7 @@ const Header = ({ setDisplayHeader, displayHeader, onSearchPosts}) => {
                 {!displayHeader && "Home"}
               </a>
             </li>
-            <li onClick={() => setDisplayHeader(!displayHeader)}>
+            <li onClick={displayingHeader}>
               <Link to="/featurepost" className="nav-link px-2 text-warning" >
                 {displayHeader ?  "Go back to Dashboard" : "Feature Posts"}
               </Link>

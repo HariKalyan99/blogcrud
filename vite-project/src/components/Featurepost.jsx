@@ -1,11 +1,15 @@
-import React from 'react'
-import Displayposts from './Displayposts'
+import React, { useContext } from 'react'
+import DisplayFeatures from './DisplayFeatures';
+import { crudStore } from "../store/Store";
 
-const Featurepost = ({featureList}) => {
+const Featurepost = () => {
+
+  const {displayHeader} = useContext(crudStore);
   return (
     <div>
-        <Displayposts featureList={featureList}/>
+        {displayHeader && <DisplayFeatures />}
     </div>
+    
   )
 }
 
