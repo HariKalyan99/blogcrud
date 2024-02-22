@@ -1,7 +1,7 @@
 import React from 'react'
 import Post from './Post'
 
-const Displayposts = ({featureList, postList}) => {
+const Displayposts = ({featureList, postList, deletePost, editPost, setPostList}) => {
 
   // const postList = [
   //   {
@@ -73,7 +73,7 @@ const Displayposts = ({featureList, postList}) => {
       <div className="container">
         <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" >
           {featureList.map((ele, ind) => (
-            <Post key={ele.id} title={ele.title} body={ele.body} userId={ele.userId} tags={ele.tags} reactions={ele.reactions}/>
+            <Post key={ele.id} title={ele.title} body={ele.body} userId={ele.userId} tags={ele.tags} reactions={ele.reactions} />
           ))}
         </div>
       </div>
@@ -85,7 +85,7 @@ const Displayposts = ({featureList, postList}) => {
       <div className="container">
         <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" >
           {postList.map((ele, ind) => (
-            <Post key={ele.id} title={ele.title} body={ele.body} userId={ele.userId} tags={ele.tags} reactions={ele.reactions}/>
+            <Post key={ele.id} title={ele.title} body={ele.body} userId={ele.userId} tags={ele.tags} reactions={ele.reactions} deletePost={deletePost} editPost={editPost} id={ele.id} setPostList={setPostList} postList={postList} />
           ))}
         </div>
       </div>
