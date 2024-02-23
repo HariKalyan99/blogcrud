@@ -5,9 +5,9 @@ import { crudStore } from '../store/Store';
 
 const Displayposts = () => {
 
-const {postList, displayHeader, displayMain} = useContext(crudStore);
+const {postList, displayMain} = useContext(crudStore);
 
-if(!displayHeader && displayMain === "post"){
+if(displayMain === "post"){
    if(postList){
     return (
       <div className="album py-5 bg-body-tertiary" style={{width: "100vw"}}>

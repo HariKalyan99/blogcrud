@@ -5,7 +5,7 @@ import { crudStore } from "../store/Store";
 import { useNavigate } from "react-router-dom";
 
 const Createpost = () => {
-  const { addPost, displayMain, displayHeader } = useContext(crudStore);
+  const { addPost, displayMain } = useContext(crudStore);
   const navigate = useNavigate();
 
   const inputUserId = useRef("");
@@ -28,11 +28,11 @@ const Createpost = () => {
     inputBody.current.value = "";
     inputTags.current.value = "";
     inputReactions.current.value = "";
-    navigate("/featurepost");
+    navigate("/displaypost");
   };
 
 
-  if(displayMain === "home" && !displayHeader){
+  if(displayMain === "home"){
       return (
         <div
           style={{

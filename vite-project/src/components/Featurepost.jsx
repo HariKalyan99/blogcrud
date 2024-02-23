@@ -5,9 +5,10 @@ import { crudStore } from "../store/Store";
 const Featurepost = () => {
 
   const {displayHeader} = useContext(crudStore);
+  
   return (
     <div>
-        {displayHeader && <DisplayFeatures />}
+        {displayHeader === "feature" && <DisplayFeatures />}
     </div>
     
   )

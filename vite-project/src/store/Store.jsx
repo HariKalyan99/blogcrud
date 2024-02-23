@@ -1,6 +1,5 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useReducer, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 
 export const crudStore = createContext({
@@ -16,15 +15,39 @@ export const crudStore = createContext({
     displayHeader: "",
 });
 
+function pureReducerFunction(currentState, action){
+  let newPostList = currentState;
+  if(action.type === "INITIAL_POSTS"){
+    newPostList = action.payload.data;
+  }else if(action.type === "ADD_POST_FROM_FETCH"){
+    newPostList = [{id: action.payload.id, userId: action.payload.userId , title: action.payload.title, body: action.payload.body, tags: action.payload.tags, reations: action.payload.reactions},...currentState]
+  }else if(action.type === "DELETE_POST"){
+    newPostList = action.payload.newPostList
+  }else if(action.type === "EDIT_POST"){
+    newPostList = [{id: action.payload.id, userId: action.payload.userId , title: action.payload.title, body: action.payload.body, tags: action.payload.tags, reations: action.payload.reactions},...action.payload.list]
+  }
+  return newPostList;
+}
+
+
+const pureReducerFunction2 = (currentState, action) => {
+  let newFeatureList = currentState;
+  if(action.type === "FEATURE_LIST"){
+    newFeatureList = action.payload.posts;
+  }else if(action.type === "FEATURE_SEARCH"){
+    newFeatureList = action.payload.posts;
+  }
+  return newFeatureList;
+}
+
 
 const CrudStoreContextProvider = ({children}) => {
   const [displayMain, setDisplayMain] = useState("home");
-  const [displayHeader, setDisplayHeader] = useState(false);
+  const [displayHeader, setDisplayHeader] = useState("");
 
-  const [featureList, setFeatureList] = useState("");
+  // const [featureList, setFeatureList] = useState("");
   const [featureSearch, setFeatureSearch] = useState("");
 
-  const [postList, setPostList] = useState([]);
 
   const [addPostList, setAddPostList] = useState({});
 
@@ -32,7 +55,11 @@ const CrudStoreContextProvider = ({children}) => {
     setFeatureSearch(searchTerm);
   };
 
-  const navigate = useNavigate();
+
+  const [postList, dispacthPostList] = useReducer(pureReducerFunction, [])
+
+  const [featureList, dispacthFeatureList] = useReducer(pureReducerFunction2, "");
+
 
   useEffect(() => {
     const controller = new AbortController();
@@ -45,14 +72,24 @@ const CrudStoreContextProvider = ({children}) => {
             signal
           );
           const { posts } = data;
-          setFeatureList(posts);
+          dispacthFeatureList({
+            type: "FEATURE_SEARCH",
+            payload: {
+              posts
+            }
+          })
         } else {
           const { data } = await axios.get(
             "https://dummyjson.com/posts",
             signal
           );
           const { posts } = data;
-          setFeatureList(posts);
+          dispacthFeatureList({
+            type: "FEATURE_LIST",
+            payload: {
+              posts,
+            }
+          })
         }
       } catch (error) {
         console.log("Error", error);
@@ -77,7 +114,12 @@ const CrudStoreContextProvider = ({children}) => {
     const fetchPostList = async () => {
       try {
         const { data } = await axios.get(`http://localhost:8081/posts`, signal);
-        setPostList(data);
+        dispacthPostList({
+          type: "INITIAL_POSTS",
+          payload: {
+            data,
+          }
+        })
       } catch (error) {
         console.log("Error", error);
       }
@@ -103,17 +145,17 @@ const CrudStoreContextProvider = ({children}) => {
             reactions: posts.reactions,
           });
           const { id, userId, title, body, tags, reactions } = data;
-          setPostList([
-            {
+          dispacthPostList({
+            type: "ADD_POST_FROM_FETCH",
+            payload: {
               id: id,
               userId: userId,
               title: title,
               body: body,
               tags: tags,
               reactions: reactions,
-            },
-            ...postList,
-          ]);
+            }
+          })
         } catch (error) {
           console.log("Error", error);
         }
@@ -127,30 +169,35 @@ const CrudStoreContextProvider = ({children}) => {
     setAddPostList({ id, userId, title, body, tags, reactions });
   };
 
-  const deletePost = (id) => {
+  const deletePost = useCallback((id) => {
     const deleteP = postList.filter((ele) => ele.id !== id);
-    setPostList(deleteP);
-  };
+    dispacthPostList({
+      type: "DELETE_POST",
+      payload: {
+        newPostList: deleteP,
+      }
+    })
+  });
 
-  const editPost = (editablePost) => {
-    console.log(editablePost);
+  const editPost = useCallback((editablePost) => {
     const editList = postList.filter((ele) => ele.id !== editablePost.previd);
-    setPostList([
-      {
+    dispacthPostList({
+      type: "EDIT_POST",
+      payload: {
         id: editablePost.id,
         userId: editablePost.userId,
         title: editablePost.title,
         body: editablePost.body,
         tags: editablePost.tags,
         reactions: editablePost.reactions,
-      },
-      ...editList,
-    ]);
-  };
+        list: editList
+      }
+    })
 
-  const displayingHeader = () => {
-    setDisplayHeader(!displayHeader);
-    // navigate("/")
+  })
+
+  const displayingHeader = (path) => {
+    setDisplayHeader(path);
   };
 
   const displayingMain = (route) => {

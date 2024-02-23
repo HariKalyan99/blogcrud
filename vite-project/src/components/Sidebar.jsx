@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 
 const Sidebar = () => {
 
-  const {displayMain, displayingMain, displayHeader} = useContext(crudStore);
-  if(!displayHeader){
+  const {displayMain, displayingMain} = useContext(crudStore);
+
     return (
       <div className="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style={{width : "180px", height: "100vh"}}>
       <a href="/" className="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
@@ -43,7 +43,6 @@ const Sidebar = () => {
       </div>
     </div>
     )
-  }
 }
 
 export default Sidebar

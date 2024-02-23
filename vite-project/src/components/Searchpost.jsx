@@ -3,7 +3,7 @@ import React from "react";
 const Searchpost = ({children, displayHeader}) => {
   return (
     <div>
-      {displayHeader && children}
+      {displayHeader === "feature" && children}
     </div>
   );
 };
